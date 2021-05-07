@@ -9,8 +9,7 @@
     <title>Blog Template · Bootstrap v5.0</title>
     <!-- Bootstrap core CSS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <link href="/docs/5.0/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
     <style>
         .bd-placeholder-img {
             font-size: 1.125rem;
@@ -73,6 +72,7 @@
                 <a class="link-secondary" href="/user/admin/">Админская страница</a>
             <?php else: ?>
                 <a class="p-2 link-secondary" href="/">Главная</a>
+
             <?php endif; ?>
             <!--            <a class="p-2 link-secondary" href="/"></a>-->
         </nav>

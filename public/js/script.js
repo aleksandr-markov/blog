@@ -19,7 +19,7 @@ $(function () {
         commentId = $(this).attr('id');
     })
     // console.log(commentId)
-    sendCommentOrReply(id, commentId, comment, countComment);
+    // sendCommentOrReply(id, commentId, comment, countComment);
     console.log(commentId)
 
 
@@ -43,14 +43,12 @@ function reply(caller) {
 }
 
 function createPost() {
-    $('button.create').on('click', function (e) {
+    $('#create').on('submit', function (e) {
         e.preventDefault();
-        let title = $('.title').val();
-        let text = $('.text').val();
         $.ajax({
             type: "POST",
             url: "/posts/store",
-            data: {title: title, text: text},
+            data: $(this).serialize(),
             success: function (result) {
                 let response = JSON.parse(result);
                 $('.count').html(response['count']);

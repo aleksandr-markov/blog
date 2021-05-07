@@ -18,26 +18,30 @@ class PostController extends Controller
 
     public function index()
     {
-        $this->view->generate('mainView.php', 'templateView.php', $this->model->index());
+        $this->view->generate('mainView.php', 'templateView.php', $this->model->index(), $this->model->getAllCategory());
     }
 
     public function store()
     {
+        var_dump($_POST);
+//        die();
+        $category = isset($_POST['category']) ? $_POST['category'] : null;
         $title = $_POST['title'];
         $text = $_POST['text'];
 
-        echo json_encode($this->model->store($title, $text, $_SESSION['user']['id']));
+        echo json_encode($this->model->store($title, $text, $_SESSION['user']['id']), $category);
     }
 
     public function create()
     {
-        $data = ['count' => $this->model->countUserPosts($_SESSION['user']['id']), 'posts' => $this->model->getPostByUserId($_SESSION['user']['id'])];
-        $this->view->generate("create-view.php", 'templateView.php', $data);
+        var_dump($_POST);
+//        $data = ['count' => $this->model->countUserPosts($_SESSION['user']['id']), 'category' => $this->model->getPostByUserId($_SESSION['user']['id'])];
+        $this->view->generate("create-view.php", 'templateView.php', $this->model->getAllCategory());
     }
 
     public function posts(int $id)
     {
-        $this->view->generate('article-view.php', 'templateView.php', $this->model->getPostById($id), $this->model->commentView($this->model->getPostComment($id)));
+        $this->view->generate('article-view.php', 'templateView.php', $this->model->getPostById($id), $this->model->getCategoryPostById($id));
     }
 
     public function edit(int $id)
@@ -75,6 +79,11 @@ class PostController extends Controller
     public function fetchComments(int $id)
     {
         echo $this->model->commentView($this->model->getPostComment($id));
+    }
+
+    public function getPostByCategory(int $id)
+    {
+        $this->view->generate('category-view.php', 'templateView.php', $this->model->getPostByCategory($id));
     }
 
 }

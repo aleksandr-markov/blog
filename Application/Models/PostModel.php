@@ -29,7 +29,7 @@ class PostModel extends Model
     }
 
 
-    public function store($title, $text, $id)
+    public function store($title, $text, $id, $category = null)
     {
         if (!empty($title) and !empty($text)) {
             $create = $this->dataConnect->prepare('INSERT INTO articles (`user_id`, `title`, `text`, `date_create`) VALUES (:user_id, :title, :article, now())');
@@ -38,8 +38,18 @@ class PostModel extends Model
             $create->bindParam(':article', $text);
             $create->execute();
 
-            return $data = ['count' => $this->countUserPosts($id), 'posts' => $this->getPostByUserId($id)];
+            $article_id = $this->dataConnect->lastInsertId();
         }
+
+        if (!empty($category)) {
+            $addCategory = $this->dataConnect->prepare('INSERT INTO article_category VALUES (:article_id, :category_id)');
+            $addCategory->bindParam(':article_id', $article_id);
+            foreach ($category as $item) {
+                $addCategory->bindValue(':category_id', $item);
+                $addCategory->execute();
+            }
+        }
+
     }
 
 
@@ -145,5 +155,28 @@ class PostModel extends Model
             echo '</li>', PHP_EOL;
         }
         echo '</ul>', PHP_EOL;
+    }
+
+    public function getCategoryPostById($id)
+    {
+        $this->database->query('SELECT c.title, c.id, a.id FROM article_category ac JOIN articles a ON a.id = ac.article_id JOIN category c ON c.id = ac.category_id WHERE a.id = :id');
+        $this->database->bind(':id', $id);
+
+        return $this->database->resultSet();
+    }
+
+    public function getAllCategory()
+    {
+        $this->database->query('SELECT * FROM category');
+
+        return $this->database->resultSet();
+    }
+
+    public function getPostByCategory(int $id)
+    {
+        $this->database->query('SELECT * FROM article_category ac JOIN category c on c.id = ac.category_id JOIN articles a ON a.id = ac.article_id WHERE ac.category_id = :id');
+        $this->database->bind(":id", $id);
+
+        return $this->database->resultSet();
     }
 }
