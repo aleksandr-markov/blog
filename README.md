@@ -1,2 +1,2 @@
-# blog
+# Skadi Blog
 Study project.
