@@ -67,11 +67,12 @@
     <div class="nav-scroller py-1 mb-2">
         <nav class="nav d-flex justify-content-between">
             <?php if (isset($_SESSION['user'])): ?>
-                <a class="p-2 link-secondary" href="/posts/create">Создать</a>
+                <a class="p-2 link-secondary" href="/">Главная</a>
                 <a class="link-secondary" href="/posts/user/<?= $_SESSION['user']['id'] ?>/">Мои посты</a>
+                <a class="p-2 link-secondary" href="/posts/create">Создать</a>
                 <a class="link-secondary" href="/user/admin/">Админская страница</a>
             <?php else: ?>
-                <a class="p-2 link-secondary" href="#">Дайджест недели</a>
+                <a class="p-2 link-secondary" href="/">Главная</a>
             <?php endif; ?>
             <!--            <a class="p-2 link-secondary" href="/"></a>-->
         </nav>
