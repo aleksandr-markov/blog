@@ -99,7 +99,7 @@ class Database
 
     public function dumpErrorInfo()
     {
-        return $this->statement->debugDumpParams();
+        return $this->statement->errorInfo();
     }
 
     public function executeQuery(string $statement, array $bindParams = null)

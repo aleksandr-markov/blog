@@ -4,6 +4,7 @@
 namespace Application\Models;
 
 
+use Core\FileRequest;
 use Core\Model;
 
 
@@ -27,14 +28,22 @@ class PostModel extends Model
 
     public function store($title, $text, $id, $category = null)
     {
+        var_dump($_POST);
+        $request = new FileRequest();
+        $file = $request->get('userFile')->upload();
+//        $this->database->executeQuery()
+        var_dump($request->get('userFile')->getName());
+//        die();
         if (!empty($title) and !empty($text)) {
             $params = [
                 ':user_id' => $id,
                 ':title' => $title,
-                ':article' => $text
+                ':article' => $text,
+                ':path' => '/storage/' . $request->get('userFile')->getName()
             ];
-            $this->database->executeQuery('INSERT INTO articles (`user_id`, `title`, `text`, `date_create`) VALUES (:user_id, :title, :article, now())',
+            $this->database->executeQuery('INSERT INTO articles (`user_id`, `title`, `text`, `date_create`, `path`) VALUES (:user_id, :title, :article, now(), :path)',
                 $params);
+            var_dump($this->database->dumpErrorInfo());
 
             $article_id = $this->database->lastInsertId();
         }

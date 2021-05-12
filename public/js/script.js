@@ -80,10 +80,14 @@ function replyComment(parent_id) {
 }
 
 function createPost() {
+    let that = $('#create')
+    let fd = new FormData(that.get(0));
     $.ajax({
         type: "POST",
         url: "/posts/store",
-        data: $('#create').serialize(),
+        contentType: false,
+        processData: false,
+        data: fd,
         success: function (response) {
             console.log(response)
         }

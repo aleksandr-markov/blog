@@ -1,7 +1,7 @@
 <div class="container">
     <main>
         <div class="create">
-            <form id="create">
+            <form id="create" action="/posts/store" method="post"  enctype="multipart/form-data">
                 <div class="py-5 text-center">
                     <h2>Добавить статью</h2>
                 </div>
@@ -28,11 +28,14 @@
                             <div class="col-sm-12">
                                 <label for="title" class="form-label">Название статьи</label>
                                 <input name="title" type="text" class="form-control title" required>
+
                                 <div class="col-12">
                                     <label for="article" class="form-label">Текст статьи</label>
                                     <textarea name="text" class="form-control text" placeholder="Текст статьи..."
                                               required></textarea>
                                 </div>
+                                <label for="userFile" class="form-label">Preview</label>
+                                <input type="file" name="userFile" id="userFile">
                             </div>
                         </div>
                         <hr class="my-4">

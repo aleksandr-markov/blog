@@ -6,6 +6,7 @@ namespace Application\Controllers;
 
 use Application\Models\PostModel;
 use Core\Controller;
+use Core\FileRequest;
 
 class PostController extends Controller
 {
@@ -25,6 +26,9 @@ class PostController extends Controller
     public function store()
     {
         var_dump($_POST);
+        var_dump($_FILES);
+
+//        var_dump($file);
 //        die();
         $category = isset($_POST['category']) ? $_POST['category'] : null;
         $title = $_POST['title'];
