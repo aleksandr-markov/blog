@@ -32,7 +32,8 @@ class UserModel extends Model
 
     private function isNotBusy($parameter)
     {
-        $this->database->executeQuery('SELECT COUNT(*)FROM users WHERE login =:parameter', [':parameter' => $parameter]);
+        $this->database->executeQuery('SELECT COUNT(*)FROM users WHERE login =:parameter',
+            [':parameter' => $parameter]);
         $countRecords = $this->database->fetchColumn();
 
         return $countRecords == 0;
@@ -103,4 +104,30 @@ class UserModel extends Model
         return $this->database->resultSet();
     }
 
+    public function getUser(int $userId)
+    {
+        $this->database->executeQuery('select * from users where id = :user_id', [':user_id' => $userId]);
+        return $this->database->singleSet();
+    }
+
+    public function getUserLastCommentActivity(int $userId)
+    {
+        $sql = "SELECT a.id, a.title, c.comment_text \n"
+            . "FROM `comments` c \n"
+            . "JOIN users u ON u.id = c.user_id \n"
+            . "JOIN articles a ON a.id = c.article_id\n"
+            . "WHERE u.id = :userId";
+        $this->database->executeQuery($sql, ['userId' => $userId]);
+        return $this->database->resultSet();
+    }
+
+    public function getUserLastLikeActivity(int $userId)
+    {
+        $sql = "SELECT a.title FROM `likes` l \n"
+            . "JOIN users u ON u.id = l.user_id\n"
+            . "JOIN articles a ON a.id = l.post_id\n"
+            . "WHERE l.user_id = 1";
+        $this->database->executeQuery($sql, ['userId' => $userId]);
+        return $this->database->resultSet();
+    }
 }

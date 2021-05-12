@@ -19,6 +19,17 @@ class UserController extends Controller
         $this->view->generate('admin-view.php', 'templateView.php', $this->model->getAllUserPost());
     }
 
+    public function profile()
+    {
+        $userId = $_SESSION['user']['id'];
+        $data = [
+            'user' => $this->model->getUser($userId),
+            'commentActivity' => $this->model->getUserLastCommentActivity($userId),
+            'likeActivity' => $this->model->getUserLastLikeActivity($userId)
+        ];
+        $this->view->generate('userPage-view.php', 'templateView.php', $data);
+    }
+
     public function join()
     {
         $this->view->generate('sign-view.php');

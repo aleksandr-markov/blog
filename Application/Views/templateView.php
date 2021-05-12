@@ -24,18 +24,19 @@
 <body>
 
 
-<div class="container">
-    <header class="blog-header py-3">
-        <?php include '../Application/Views/header-view.php'; ?>
+<!--<div class="container">-->
+<header class="p-3 mb-3 border-bottom">
+    <div class="container">
         <?php include '../Application/Views/navbar-view.php'; ?>
-    </header>
+    </div>
+</header>
     <main class="container">
         <?php include '../Application/Views/' . $contentView; ?>
     </main>
 
         <?php include '../Application/Views/footer-view.php' ?>
 
-</div>
+<!--</div>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
