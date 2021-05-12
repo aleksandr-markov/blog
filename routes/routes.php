@@ -6,7 +6,7 @@ $router->get('/', [\Application\Controllers\PostController::class, 'index']);
 
 $router->get('/posts/create',[\Application\Controllers\PostController::class, 'create']);
 $router->post('/posts/store',[\Application\Controllers\PostController::class, 'store']);
-
+//$router->group()
 
 $router->get('/posts/{id:\d+}/show',[\Application\Controllers\PostController::class, 'posts']);
 $router->get('/posts/user/{user_id:\d+}',[\Application\Controllers\PostController::class, 'userPosts']);
@@ -27,6 +27,7 @@ $router->get('/user/join', [\Application\Controllers\UserController::class, 'joi
 $router->get('/user/accountActivation/{hash}', [\Application\Controllers\UserController::class, 'userActivation']);
 $router->get('/user/admin', [\Application\Controllers\UserController::class, 'admin']);
 $router->post('/user/signup', [\Application\Controllers\UserController::class, 'signup']);
+$router->post('/posts/like', [\Application\Controllers\PostController::class, 'like']);
 
 $router->get('/error404', [\Application\Controllers\Error404Controller::class, 'index']);
 
