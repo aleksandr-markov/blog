@@ -4,13 +4,11 @@
 namespace Application\Models;
 
 
-use Core\Database;
 use Core\Model;
-use PDO;
+
 
 class PostModel extends Model
 {
-    private $database;
 
     /**
      * ArticleModel constructor.
@@ -18,35 +16,35 @@ class PostModel extends Model
     public function __construct()
     {
         parent::__construct();
-        $this->database = new Database();
     }
 
     public function index()
     {
-        $fetchPosts = $this->dataConnect->query('SELECT * FROM articles ORDER BY id DESC');
+        $this->database->executeQuery('SELECT * FROM articles ORDER BY id DESC');
 
-        return $fetchPosts->fetchAll(PDO::FETCH_ASSOC);
+        return $this->database->resultSet();
     }
-
 
     public function store($title, $text, $id, $category = null)
     {
         if (!empty($title) and !empty($text)) {
-            $create = $this->dataConnect->prepare('INSERT INTO articles (`user_id`, `title`, `text`, `date_create`) VALUES (:user_id, :title, :article, now())');
-            $create->bindValue(':user_id', $id);
-            $create->bindParam(':title', $title);
-            $create->bindParam(':article', $text);
-            $create->execute();
+            $params = [
+                ':user_id' => $id,
+                ':title' => $title,
+                ':article' => $text
+            ];
+            $this->database->executeQuery('INSERT INTO articles (`user_id`, `title`, `text`, `date_create`) VALUES (:user_id, :title, :article, now())',
+                $params);
 
-            $article_id = $this->dataConnect->lastInsertId();
+            $article_id = $this->database->lastInsertId();
         }
 
         if (!empty($category)) {
-            $addCategory = $this->dataConnect->prepare('INSERT INTO article_category VALUES (:article_id, :category_id)');
-            $addCategory->bindParam(':article_id', $article_id);
+            $this->database->query('INSERT INTO article_category VALUES (:article_id, :category_id)');
+            $this->database->bind(':article_id', $article_id);
             foreach ($category as $item) {
-                $addCategory->bindValue(':category_id', $item);
-                $addCategory->execute();
+                $this->database->bind(':category_id', $item);
+                $this->database->execute();
             }
         }
 
@@ -55,128 +53,143 @@ class PostModel extends Model
 
     public function getPostById(int $id)
     {
-        $getArticles = $this->dataConnect->prepare('SELECT * FROM articles WHERE id = :id');
-        $getArticles->bindParam(':id', $id);
-        $getArticles->execute();
+        $this->database->executeQuery('SELECT * FROM articles WHERE id = :id', [':id' => $id]);
 
-        return $getArticles->fetch(PDO::FETCH_ASSOC);
+        return $this->database->singleSet();
     }
 
     public function getPostByUserId(int $id)
     {
-        $this->database->query('SELECT * FROM articles WHERE user_id = :id');
-        $this->database->bind(':id', $id);
+        $this->database->executeQuery('SELECT * FROM articles WHERE user_id = :id', [':id' => $id]);
 
         return $this->database->resultSet();
     }
 
     public function update($title, $text, $id)
     {
-        $editPost = $this->dataConnect->prepare('UPDATE articles SET title = :title, text = :text WHERE id = :id');
-        $editPost->bindParam(':title', $title);
-        $editPost->bindParam(':text', $text);
-        $editPost->bindParam(':id', $id);
-        $editPost->execute();
+        $params = [':title' => $title, ':text' => $text, ':id' => $id];
+        $this->database->executeQuery('UPDATE articles SET title = :title, text = :text WHERE id = :id', $params);
     }
 
 
     public function delete(int $id)
     {
-        $deletePost = $this->dataConnect->prepare('DELETE FROM articles WHERE id = :id');
-        $deletePost->bindParam(':id', $id);
-        $deletePost->execute();
-    }
-
-
-    public function countUserPosts($id)
-    {
-        $this->database->query('SELECT COUNT(*) FROM articles WHERE user_id = :id');
-        $this->database->bind(':id', $id);
-
-        return $this->database->rowCount();
-
+        $this->database->executeQuery('DELETE FROM articles WHERE id = :id', [':id' => $id]);
     }
 
 
     public function addComment($userId, $articleId, $text, $parentId = null)
     {
-        $this->database->query('INSERT INTO comments(`user_id`, `article_id`, `comment_text`, `parent_id`, `time`) VALUES (:user_id, :article_id, :text, :parent_id, NOW())');
-        $this->database->bind(':user_id', $userId);
-        $this->database->bind(':article_id', $articleId);
-        $this->database->bind(':text', $text);
-        $this->database->bind(':parent_id', $parentId);
-        $this->database->execute();
+        $params = [
+            ':user_id' => $userId,
+            ':article_id' => $articleId,
+            ':text' => $text,
+            ':parent_id' => $parentId
+        ];
+        $this->database->executeQuery('INSERT INTO comments(`user_id`, `article_id`, `comment_text`, `parent_id`, `time`) VALUES (:user_id, :article_id, :text, :parent_id, NOW())',
+            $params);
+
         $id = ['id' => $articleId];
-        $data = ['count' => $this->getCountComment($articleId), 'comments' => $this->getPostComment($articleId)];
+        $data = $this->getPostComment($articleId);
 
         return json_encode($data);
     }
 
-    public function getCountComment($id)
-    {
-        $this->database->query("SELECT * FROM comments WHERE article_id = :id");
-        $this->database->bind(':id', $id);
-
-        return $this->database->columnCount();
-    }
 
     public function getPostComment(int $id)
     {        #echo '<pre>';
-        $comments = $this->dataConnect->prepare('SELECT u.login, comment_text, article_id, time, parent_id, c.id FROM comments c join users u on u.id = c.user_id where article_id = :id ORDER BY time DESC');
-        $comments->bindValue(':id', $id);
-        $comments->execute();
-        $postComment = $comments->fetchAll(PDO::FETCH_ASSOC);
+        $this->database->executeQuery('SELECT u.login, comment_text, article_id, time, parent_id, c.id FROM comments c join users u on u.id = c.user_id where article_id = :id ORDER BY time DESC',
+            [':id' => $id]);
+//        $this->database->query('select * from comments');
+//        $this->database->execute();
+        $postComment = $this->database->resultSet();
 
-        return $this->build_tree($postComment);
+        return $this->buildTree($postComment);
     }
 
-    private function build_tree(&$items, $parentId = null)
+    private function buildTree(&$items, $parentId = null)
     {
         $treeItems = [];
         foreach ($items as $idx => $item) {
             if ((empty($parentId) && empty($item['parent_id'])) || (!empty($item['parent_id']) && !empty($parentId) && $item['parent_id'] == $parentId)) {
-                $items[$idx]['children'] = $this->build_tree($items, $items[$idx]['id']);
+                $items[$idx]['children'] = $this->buildTree($items, $items[$idx]['id']);
                 $treeItems [] = $items[$idx];
             }
         }
+
         return $treeItems;
     }
 
     public function commentView($arr, $level = 0)
     {
-        echo '<ul>', PHP_EOL;
+        echo '<ul>';
+//        echo '<ul>', PHP_EOL;
         foreach ($arr as $comment) {
-            echo '<li style="list-style-type: none;"> <span class="user">' . $comment['login'] . ' </span><span class="time">', $comment['time'], '</span> ', '<span class="userComment">', htmlentities($comment['comment_text']), '</span>', PHP_EOL;
-            echo '<div class="reply" id="' . $comment['id'] . '"><a href="javascript:void(0)">ответить</a></div>';
+            echo '<li style="list-style-type: none;"> <span class="user">' . $comment['login'] .
+                ' </span><span class="time">' . $comment['time'] . '</span> ' . '<span class="userComment">' .
+                htmlentities($comment['comment_text']) . '</span>';
+            echo '<div class="reply" id="' . $comment['id'] . '"><a href="javascript:void(0)" onclick="replyComment(' . $comment['id'] . ')">ответить</a></div>';
 
             if (!empty($comment['children'])) {
                 $this->commentView($comment['children'], $level + 1); // recurse into the next level
             }
-            echo '</li>', PHP_EOL;
+            echo '</li>';
         }
-        echo '</ul>', PHP_EOL;
+        echo '</ul>';
+
+//        echo $html;
     }
 
     public function getCategoryPostById($id)
     {
-        $this->database->query('SELECT c.title, c.id, a.id FROM article_category ac JOIN articles a ON a.id = ac.article_id JOIN category c ON c.id = ac.category_id WHERE a.id = :id');
-        $this->database->bind(':id', $id);
+        $this->database->executeQuery('SELECT c.title, c.id, a.id FROM article_category ac JOIN articles a ON a.id = ac.article_id JOIN category c ON c.id = ac.category_id WHERE a.id = :id',
+            [':id' => $id]);
 
         return $this->database->resultSet();
     }
 
     public function getAllCategory()
     {
-        $this->database->query('SELECT * FROM category');
+        $this->database->executeQuery('SELECT * FROM category');
 
         return $this->database->resultSet();
     }
 
     public function getPostByCategory(int $id)
     {
-        $this->database->query('SELECT * FROM article_category ac JOIN category c on c.id = ac.category_id JOIN articles a ON a.id = ac.article_id WHERE ac.category_id = :id');
-        $this->database->bind(":id", $id);
+        $this->database->executeQuery('SELECT * FROM article_category ac JOIN category c on c.id = ac.category_id JOIN articles a ON a.id = ac.article_id WHERE ac.category_id = :id',
+            ['id' => $id]);
 
         return $this->database->resultSet();
+    }
+
+    public function like(int $userId, int $postId)
+    {
+        $params = [':post_id' => $postId, ':user_id' => $userId, ':action' => 'like'];
+        $this->database->executeQuery('INSERT INTO likes(post_id, user_id, action) values (:post_id, :user_id, :action)',
+            $params);
+        echo($this->getLikes($postId));
+    }
+
+    public function getLikes(int $postId)
+    {
+        $this->database->executeQuery('SELECT COUNT(*) FROM likes WHERE post_id = :postId', [':postId' => $postId]);
+        return $this->database->fetchColumn();
+
+    }
+
+    public function unlike(int $userId, int $postId)
+    {
+        $params = [':user_id' => $userId, ':post_id' => $postId,];
+        $this->database->executeQuery('DELETE FROM `likes` WHERE `post_id` = :post_id AND `user_id` = :user_id',
+            $params);
+        echo($this->getLikes($postId));
+    }
+
+    public function isUserLiked(int $postId, int $userId): bool
+    {
+        $this->database->executeQuery('select count(*) from likes where post_id = :post_id and user_id = :user_id',
+            [':post_id' => $postId, ':user_id' => $userId]);
+        return $this->database->fetchColumn();
     }
 }

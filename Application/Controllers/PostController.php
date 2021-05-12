@@ -18,7 +18,8 @@ class PostController extends Controller
 
     public function index()
     {
-        $this->view->generate('mainView.php', 'templateView.php', $this->model->index(), $this->model->getAllCategory());
+        $this->view->generate('mainView.php', 'templateView.php', $this->model->index(),
+            $this->model->getAllCategory());
     }
 
     public function store()
@@ -29,19 +30,25 @@ class PostController extends Controller
         $title = $_POST['title'];
         $text = $_POST['text'];
 
-        echo json_encode($this->model->store($title, $text, $_SESSION['user']['id']), $category);
+        $this->model->store($title, $text, $_SESSION['user']['id'], $category);
     }
 
     public function create()
     {
-        var_dump($_POST);
+//        var_dump($_POST);
 //        $data = ['count' => $this->model->countUserPosts($_SESSION['user']['id']), 'category' => $this->model->getPostByUserId($_SESSION['user']['id'])];
         $this->view->generate("create-view.php", 'templateView.php', $this->model->getAllCategory());
     }
 
     public function posts(int $id)
     {
-        $this->view->generate('article-view.php', 'templateView.php', $this->model->getPostById($id), $this->model->getCategoryPostById($id));
+        $data = [
+            'post' => $this->model->getPostById($id),
+            'isLiked' => $this->model->isUserLiked($id, $_SESSION['user']['id']),
+            'getLikes' => $this->model->getLikes($id)
+        ];
+        $this->view->generate('article-view.php', 'templateView.php', $data,
+            $this->model->getCategoryPostById($id));
     }
 
     public function edit(int $id)
@@ -66,8 +73,9 @@ class PostController extends Controller
 
     public function addComment()
     {
-        var_dump($_POST);
-        echo($this->model->addComment($_SESSION['user']['id'], $_POST['articleId'], trim($_POST['comment_content']), $_POST['parentId']));
+//        var_dump($_POST);
+        echo($this->model->addComment($_SESSION['user']['id'], $_POST['articleId'], trim($_POST['comment_content']),
+            isset($_POST['parentId']) ? $_POST['parentId'] : 0));
     }
 
 
@@ -84,6 +92,20 @@ class PostController extends Controller
     public function getPostByCategory(int $id)
     {
         $this->view->generate('category-view.php', 'templateView.php', $this->model->getPostByCategory($id));
+    }
+
+    public function like()
+    {
+        switch ($_POST['action']) {
+            case('like'):
+                return $this->model->like($_SESSION['user']['id'], $_POST['postId']);
+//                break;
+            case ('unlike'):
+                return $this->model->unlike($_SESSION['user']['id'], $_POST['postId']);
+//                break;
+            default:
+                break;
+        }
     }
 
 }

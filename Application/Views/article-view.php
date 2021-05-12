@@ -1,19 +1,22 @@
 <!--<span class="badge badge-secondary">asdsad</span>-->
 <div class="container">
-    <input type="hidden" class="articleId" name="articleId" id="<?= $data['id'] ?>">
+    <input type="hidden" class="articleId" name="articleId" id="<?= $data['post']['id'] ?>">
 
-    <h1 style="text-align: center"><?= $data['title'] ?></h1>
-    <!--    <a href="" class="badge badge-dark">Dark</a>-->
+    <h1 style="text-align: center"><?= $data['post']['title'] ?></h1>
     <div class="category">
-        <?php foreach ($otherData as $value):?>
-        <span class="badge badge-dark"><?=$value['title']?></span>
-        <?php endforeach;?>
+        <?php foreach ($otherData as $value): ?>
+            <span class="badge badge-dark"><?= $value['title'] ?></span>
+        <?php endforeach; ?>
     </div>
+    <p><?= $data['post']['text'] ?></p>
 
-
-    <p><?= $data['text'] ?></p>
-    <!--    <input type="hidden" name="article_id" class="post_id" id="--><? //= $data['id'] ?><!--">-->
-
+    <?php if (!$data['isLiked']): ?>
+        <i class="fa fa-thumbs-o-up fa-2x like-btn" data-id="<?= $data['post']['id'] ?>"><span
+                    class="countLikes"><?= $data['getLikes'] ?></span></i>
+    <?php else: ?>
+        <i class="fa fa-thumbs-up fa-2x like-btn" data-id="<?= $data['post']['id'] ?>"><span
+                    class="countLikes"><?= $data['getLikes'] ?></span></i>
+    <?php endif; ?>
 
     <div class="row">
         <div class="col-md-12">
@@ -48,5 +51,5 @@
 
 <!--                    <div class="user"><b>jjj</b> <span class="time">jjj</span></div>-->
 <!--                    <div class="userComment">hhh</div>-->
-<!--                    <div class="reply" id=""><a href="javascript:void(0)">ответить</a></div>-->
+<!--                    <div class="reply" id=""><a href="javascript:void(0)" onclick="forReply(1)">ответить</a></div>-->
 
