@@ -4,6 +4,7 @@
 namespace Core;
 
 use PDO;
+use PDOException;
 
 require '../config.php';
 
@@ -59,24 +60,23 @@ class Database
     }
 
     //Execute the prepared statement
+
+    public function resultSet()
+    {
+        return $this->statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    //Return an array
+
     public function execute()
     {
         return $this->statement->execute();
     }
 
-    //Return an array
-    public function resultSet()
-    {
-        $this->execute();
-
-        return $this->statement->fetchAll(PDO::FETCH_ASSOC);
-    }
-
     //Return a specific row as an object
+
     public function singleSet()
     {
-        $this->execute();
-
         return $this->statement->fetch(PDO::FETCH_ASSOC);
     }
 
@@ -86,17 +86,38 @@ class Database
         return $this->statement->rowCount();
     }
 
+    public function fetchColumn()
+    {
+        return $this->statement->fetchColumn();
+    }
+
     //Counting rows returned by a SELECT statement
     public function columnCount()
     {
-        $this->execute();
-
         return $this->statement->columnCount();
     }
 
-
-    public function error()
+    public function dumpErrorInfo()
     {
-        return $this->statement->errorInfo();
+        return $this->statement->debugDumpParams();
+    }
+
+    public function executeQuery(string $statement, array $bindParams = null)
+    {
+        $this->query($statement);
+        if ($bindParams == null) {
+            return $this->execute();
+        }
+
+        foreach ($bindParams as $placeholders => $value) {
+            $this->bind($placeholders, $value);
+        }
+
+        return $this->execute();
+    }
+
+    public function lastInsertId()
+    {
+        return $this->dbHandler->lastInsertId();
     }
 }
