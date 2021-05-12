@@ -19,6 +19,7 @@ class PostModel extends Model
         parent::__construct();
     }
 
+
     public function index()
     {
         $this->database->executeQuery('SELECT * FROM articles ORDER BY id DESC');
@@ -200,5 +201,17 @@ class PostModel extends Model
         $this->database->executeQuery('select count(*) from likes where post_id = :post_id and user_id = :user_id',
             [':post_id' => $postId, ':user_id' => $userId]);
         return $this->database->fetchColumn();
+    }
+
+    public function getTopPosts()
+    {
+        $sql = "select COUNT(l.id) AS countLike, a.title, a.id, a.date_create, a.text, a.path from likes l \n"
+            . "JOIN articles a ON l.post_id = a.id\n"
+            . "GROUP by l.post_id\n"
+            . "ORDER BY `countLike` DESC LIMIT 4";
+
+        $this->database->query($sql);
+        $this->database->execute();
+        return $this->database->resultSet();
     }
 }

@@ -6,7 +6,6 @@ namespace Application\Controllers;
 
 use Application\Models\PostModel;
 use Core\Controller;
-use Core\FileRequest;
 
 class PostController extends Controller
 {
@@ -19,8 +18,11 @@ class PostController extends Controller
 
     public function index()
     {
-        $this->view->generate('mainView.php', 'templateView.php', $this->model->index(),
-            $this->model->getAllCategory());
+        $data = [
+            'category' => $this->model->getAllCategory(),
+            'topPost' => $this->model->getTopPosts()
+        ];
+        $this->view->generate('mainView.php', 'templateView.php', $this->model->index(), $data);
     }
 
     public function store()

@@ -29,9 +29,9 @@
         <?php include '../Application/Views/header-view.php'; ?>
         <?php include '../Application/Views/navbar-view.php'; ?>
     </header>
-    <div>
+    <main class="container">
         <?php include '../Application/Views/' . $contentView; ?>
-    </div>
+    </main>
 
         <?php include '../Application/Views/footer-view.php' ?>
 
