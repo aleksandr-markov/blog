@@ -5,7 +5,6 @@ namespace Application\Controllers;
 
 use Application\Models\UserModel;
 use Core\Controller;
-use Core\Mailer;
 
 class UserController extends Controller
 {
@@ -15,9 +14,10 @@ class UserController extends Controller
         $this->model = new UserModel();
     }
 
-    public function admin () {
+    public function admin()
+    {
         $this->view->generate('admin-view.php', 'templateView.php', $this->model->getAllUserPost());
-}
+    }
 
     public function join()
     {

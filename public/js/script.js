@@ -1,132 +1,161 @@
 $(function () {
-    // checkNameEmpty('#login')
-    // let login = $("#login").val();
-    // let email = $("#email").val();
-    // let password = $("#password").val();
-    signupConfirm();
-    loginConfirm()
 
-    // let isReply = false;
-    let id = $(".articleId").attr('id');
-    let commentId;
-    let comment;
-    let countComment = $('#countComment').val();
-
-    $('.reply').on('click', function () {
-        console.log('1');
-        // reply(this);
-        // commentId = ;
-        commentId = $(this).attr('id');
+    /*
+    Create post.
+     */
+    $('#create').on('submit', function (e) {
+        e.preventDefault()
+        createPost();
     })
-    // console.log(commentId)
-    // sendCommentOrReply(id, commentId, comment, countComment);
-    console.log(commentId)
+
+    /*
+    Create comment.
+     */
+    $("#addComment").on('click', function () {
+        sendComment(articleId, comment);
+    })
+
+    /*
+    Login confirm
+     */
+    $('#loginSubmit').on('click', function () {
+        loginConfirm()
+    });
 
 
-    // sendCommentOrReply(id, commentId, comment, countComment);
-    fetchComment(id)
-    // setInterval(function (){
-    //     fetchComment();
-    // },3000);
+    /*
+    Sign Up confirm
+     */
+    signupConfirm()
 
 
-    createPost();
+    /*
+    Show all comments.
+     */
+    fetchComment(articleId);
+
+    /*
+    Show comments every 30 sec.
+     */
+
+    fetchComment(articleId);
+    // setInterval(function () {
+    // }, 3000)
 
 
+    likePost();
 })
 
+let articleId = $(".articleId").attr('id');
+let comment;
 let isReply = false;
 
-function reply(caller) {
-    $('.rowReply').insertAfter($(caller))
+function replyComment(parent_id) {
+    // clearInterval()
+    $('.rowReply').insertAfter($('#' + parent_id))
     $('.rowReply').show();
-}
+    $("#addReply").on('click', function () {
+        let comment = $("#replyComment").val();
+        let articleId = $(".articleId").attr('id');
 
-function createPost() {
-    $('#create').on('submit', function (e) {
-        e.preventDefault();
-        $.ajax({
-            type: "POST",
-            url: "/posts/store",
-            data: $(this).serialize(),
-            success: function (result) {
-                let response = JSON.parse(result);
-                $('.count').html(response['count']);
-                console.log(response)
-            }
-        });
-        $('.title').val('');
-        $('.text').val('');
-    })
-}
-
-function fetchComment(id) {
-    $.ajax({
-        url: '/posts/' + id + '/comments',
-        method: 'GET',
-        dataType: 'html',
-        success: function (response) {
-            // console.log(response);
-            $('.comment').html(response);
-
-        }
-    })
-}
-
-function sendCommentOrReply(id, commentId, comment, countComment) {
-    $("#addComment, #addReply").on('click', function () {
-        console.log(1);
-        if (!isReply) {
-            comment = $("#commentField").val();
-        } else {
-            comment = $("#replyComment").val();
-        }
         $.ajax({
             url: "/posts/comments",
             method: "POST",
             dataType: 'text',
             data: {
                 comment_content: comment,
-                articleId: id,
-                parentId: commentId
+                articleId: articleId,
+                parentId: parent_id
             },
             success: function (response) {
-                let json = JSON.parse(response)
-                $("#countComment").html(json['count']);
-                if (!isReply) {
-                    $("#commentField").val('');
-                    successFetchComment(json['comments']);
-                } else {
-                    $('.rowReply').hide();
-                    $('.rowReply').val('');
-                    $('.replies').append(` <div class="comment">
-                            <div class="user"><b>${json['login']}</b> <span class="time">2019-07-15</span></div>
-                            <div class="userComment"></div>
-                        </div>`)
-                }
+                console.log(response)
+                // $('')
+                fetchComment(articleId);
+                $('.rowReply').val('');
+                $
+
             }
         })
     })
 }
 
-function loginConfirm() {
-    $('#loginSubmit').on('click', function () {
-        let email = $('#loginEmail').val();
-        let password = $('#loginPassword').val();
-        $.ajax({
-            url: '/user/authorize',
-            method: 'POST',
-            dataType: 'text',
-            data: {email: email, password: password},
-            success: function (response) {
-                $('#msgbox').css('display', 'block').html(response);
-                console.log(response)
-                if (response === 'Добро пожаловать') {
-                    $(location).attr('href', '/user/admin')
-                }
+function createPost() {
+    $.ajax({
+        type: "POST",
+        url: "/posts/store",
+        data: $('#create').serialize(),
+        success: function (response) {
+            console.log(response)
+        }
+    });
+    $('.title').val('');
+    $('.text').val('');
+}
 
+function fetchComment(articleId) {
+    $.ajax({
+        url: '/posts/' + articleId + '/comments',
+        method: 'GET',
+        dataType: 'html',
+        success: function (response) {
+            // console.log(response);
+            $('.comment').html(response);
+            // fetchComment(articleId);
+        }
+    })
+}
+
+// function sendReply(article_id, comment, parent_id) {
+//     $("#addReply").on('click', function () {
+//         comment = $("#replyComment").val();
+//
+//         $.ajax({
+//             url: "/posts/comments",
+//             method: "POST",
+//             dataType: 'text',
+//             data: {
+//                 comment_content: comment,
+//                 articleId: article_id,
+//                 parentId: parent_id
+//             },
+//             success: function (response) {
+//                 console.log(response)
+//             }
+//         })
+//     })
+// }
+
+function sendComment(articleId, comment) {
+    comment = $("#commentField").val();
+    $.ajax({
+        url: "/posts/comments",
+        method: "POST",
+        dataType: 'text',
+        data: {
+            comment_content: comment,
+            articleId: articleId,
+        },
+        success: function (response) {
+            $("#commentField").val('')
+        }
+    })
+}
+
+function loginConfirm() {
+    let email = $('#loginEmail').val();
+    let password = $('#loginPassword').val();
+    $.ajax({
+        url: '/user/authorize',
+        method: 'POST',
+        dataType: 'text',
+        data: {email: email, password: password},
+        success: function (response) {
+            $('#msgbox').css('display', 'block').html(response);
+            console.log(response)
+            if (response === 'Welcome') {
+                $(location).attr('href', '/user/admin')
             }
-        })
+        }
     })
 }
 
@@ -137,10 +166,8 @@ Submitting and validating the registration form.
 function signupConfirm() {
 
     checkEmptyLogin('#login')
-    // console.log(checkEmptyLogin('#login'));
     checkValidEmail('#email')
     checkLengthPassword('#password')
-
 
     $('#signupSubmit').on('click', function () {
             let login = $("#login").val();
@@ -228,5 +255,49 @@ function checkLengthPassword(passwordInputId) {
             return true;
         }
     });
+}
+
+function likePost() {
+    $('.like-btn').on('click', function () {
+        let postId = $(this).data('id');
+        let clicked = $(this);
+        let action;
+
+        // console.log(clicked)
+
+        if (clicked.hasClass('fa-thumbs-o-up')) {
+            action = 'like'
+            //
+        } else if (clicked.hasClass('fa-thumbs-up')) {
+            action = 'unlike'
+            //
+        }
+
+        $.ajax({
+            url: "/posts/like",
+            method: "POST",
+            dataType: 'text',
+            data: {
+                action: action,
+                postId: postId
+            },
+            success: function (response) {
+                console.log(response)
+
+                if (action === 'like') {
+                    // alert('like')
+                    $('.countLikes').html(response);
+                    clicked.removeClass('fa-thumbs-o-up');
+                    clicked.addClass('fa-thumbs-up');
+                } else if (action === 'unlike') {
+                    // alert('unlike')
+                    $('.countLikes').html(response);
+                    clicked.removeClass('fa-thumbs-up');
+                    clicked.addClass('fa-thumbs-o-up');
+                }
+            }
+        })
+
+    })
 }
 
