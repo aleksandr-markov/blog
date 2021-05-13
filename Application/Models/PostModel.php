@@ -214,4 +214,11 @@ class PostModel extends Model
         $this->database->execute();
         return $this->database->resultSet();
     }
+
+    public function getByPostContent(string $text)
+    {
+        $sql = "select * from articles where text like :text or title like :text";
+        $this->database->executeQuery($sql, [':text' => '%'.$text.'%']);
+        return $this->database->resultSet();
+    }
 }

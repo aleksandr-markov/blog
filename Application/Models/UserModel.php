@@ -117,7 +117,7 @@ class UserModel extends Model
             . "JOIN users u ON u.id = c.user_id \n"
             . "JOIN articles a ON a.id = c.article_id\n"
             . "WHERE u.id = :userId";
-        $this->database->executeQuery($sql, ['userId' => $userId]);
+        $this->database->executeQuery($sql, [':userId' => $userId]);
         return $this->database->resultSet();
     }
 
@@ -126,8 +126,8 @@ class UserModel extends Model
         $sql = "SELECT a.title FROM `likes` l \n"
             . "JOIN users u ON u.id = l.user_id\n"
             . "JOIN articles a ON a.id = l.post_id\n"
-            . "WHERE l.user_id = 1";
-        $this->database->executeQuery($sql, ['userId' => $userId]);
+            . "WHERE l.user_id = :userId";
+        $this->database->executeQuery($sql, [':userId' => $userId]);
         return $this->database->resultSet();
     }
 }

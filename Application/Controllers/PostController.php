@@ -18,6 +18,7 @@ class PostController extends Controller
 
     public function index()
     {
+//        var_dump($this->model->getByPostContent('lorem'));
         $data = [
             'category' => $this->model->getAllCategory(),
             'topPost' => $this->model->getTopPosts()
@@ -112,6 +113,12 @@ class PostController extends Controller
             default:
                 break;
         }
+    }
+
+    public function searchByPostContent()
+    {
+        var_dump($_GET);
+        $this->view->generate('searchPage-view.php', 'templateView.php', $this->model->getByPostContent($_GET['text']));
     }
 
 }

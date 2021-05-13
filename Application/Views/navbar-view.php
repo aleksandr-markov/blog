@@ -40,7 +40,26 @@
 <!--    </div>-->
 <!--</nav>-->
 
-
+<!--<style>-->
+<!--    .search {-->
+<!--        width: 300px; /* Ширина поля с кнопкой */-->
+<!--        border: 1px solid #000; /* Параметры рамки */-->
+<!--        min-height: 20px; /* Минимальная высота */-->
+<!--    }-->
+<!--    input[type="search"] {-->
+<!--        border: none; /* Убираем рамку */-->
+<!--        outline: none; /* Убираем свечение в Chrome и Safari */-->
+<!--        -webkit-appearance: none; /* Убираем рамку в Chrome и Safari */-->
+<!--        width: 274px; /* Ширина поля */-->
+<!--        vertical-align: middle; /* Выравнивание по середине */-->
+<!--    }-->
+<!--    input[type="submit"] {-->
+<!--        width: 20px; /* Ширина кнопки */-->
+<!--        height: 20px; /* Высота кнопки */-->
+<!--        border: none; /* Убираем рамку */-->
+<!--        /*background: url(images/video.png) no-repeat 50% 50%; !* Параметры фона *!*/-->
+<!--    }-->
+<!--</style>-->
 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
     <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 text-dark text-decoration-none">
         <span class="navbar-brand">skadi</span>
@@ -57,9 +76,21 @@
             <li><a href="/" class="nav-link px-2 link-secondary"></a></li>
         </ul>
 
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        <form method="get" action="/search/inPost" class="form-inline">
+            <div class="form-group">
+                <div class="col-auto">
+                    <div class="input-group">
+                        <input type="search" class="form-control search" placeholder="Search..." id="search"
+                               aria-label="Search">
+                        <button class="input-group-text"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
         </form>
+        <!--        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 search">-->
+        <!--            <input type="search"  class="form-control search" placeholder="Search..." id="search" aria-label="Search">-->
+        <!--            <input type="submit" value="submit">-->
+        <!--        </form>-->
 
         <div class="text-end">
             <a class="btn btn-outline-dark me-2" href="/user/login">Login</a>
@@ -72,9 +103,18 @@
             <li><a href="/posts/user/<?= $_SESSION['user']['id'] ?>" class="nav-link px-2 link-secondary">my posts</a>
             </li>
         </ul>
-        <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3">
-            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
+        <form method="get" action="/search/main" class="form-inline">
+            <div class="form-group">
+                <div class="col-auto">
+                    <div class="input-group">
+                        <input type="search" class="form-control search" name="text" placeholder="Search..." id="search"
+                               aria-label="Search">
+                        <button class="input-group-text"><i class="fa fa-search"></i></button>
+                    </div>
+                </div>
+            </div>
         </form>
+
 
         <div class="dropdown text-end">
             <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser1"

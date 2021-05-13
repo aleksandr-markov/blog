@@ -44,6 +44,24 @@ $(function () {
 
 
     likePost();
+
+    /*
+    Search
+     */
+    // $('#searchBox').on('change', function (event){
+    //     event.preventDefault();
+    //     let data = $('#searchInput').val();
+    //     // $.get('search/byPost' )
+    //     $.ajax({
+    //         url: '/search/inPost',
+    //         method: 'GET',
+    //         data: {text: data},
+    //         success: function (response){
+    //             console.log(response);
+    //         }
+    //     })
+    // });
+
 })
 
 let articleId = $(".articleId").attr('id');

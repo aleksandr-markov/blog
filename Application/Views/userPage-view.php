@@ -10,7 +10,7 @@
         <div class="container-fluid py-5">
             <h1 class="display-5 fw-bold">welcome, <?= $data['user']['login'] ?></h1>
             <p class="col-md-8 fs-4">
-                on this page, all information about your activity on the site, you can see the statistics of your
+                on this page, all information about your activity on the site, you can see statistics of your
                 articles, as well as your last likes and comments</p>
             <!--            <a class="btn btn-primary btn-lg" href="/posts/-->
             <? //=$data['id']?><!--/show" ">Example button</a>-->
