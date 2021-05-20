@@ -10,10 +10,12 @@ use Core\Controller;
 class PostController extends Controller
 {
 
+    public $allCategory;
+
     public function __construct()
     {
-        parent::__construct();
         $this->model = new PostModel();
+        parent::__construct();
     }
 
     public function index()
@@ -28,11 +30,6 @@ class PostController extends Controller
 
     public function store()
     {
-        var_dump($_POST);
-        var_dump($_FILES);
-
-//        var_dump($file);
-//        die();
         $category = isset($_POST['category']) ? $_POST['category'] : null;
         $title = $_POST['title'];
         $text = $_POST['text'];
@@ -51,9 +48,9 @@ class PostController extends Controller
     {
         $data = [
             'post' => $this->model->getPostById($id),
-            'isLiked' => $this->model->isUserLiked($id, $_SESSION['user']['id']),
             'getLikes' => $this->model->getLikes($id)
         ];
+        isset($_SESSION['user']) ? $data['isLiked'] = $this->model->isUserLiked($id, $_SESSION['user']['id']) : null;
         $this->view->generate('article-view.php', 'templateView.php', $data,
             $this->model->getCategoryPostById($id));
     }
@@ -107,18 +104,24 @@ class PostController extends Controller
             case('like'):
                 return $this->model->like($_SESSION['user']['id'], $_POST['postId']);
 //                break;
-            case ('unlike'):
+            case
+            ('unlike'):
                 return $this->model->unlike($_SESSION['user']['id'], $_POST['postId']);
 //                break;
             default:
-                break;
+                return false;
         }
     }
 
-    public function searchByPostContent()
+    public function searchMain()
     {
         var_dump($_GET);
-        $this->view->generate('searchPage-view.php', 'templateView.php', $this->model->getByPostContent($_GET['text']));
+        $this->view->generate('searchPage-view.php', 'templateView.php', $this->model->getPostByText($_GET['text']));
+    }
+
+    public function search()
+    {
+       echo json_encode($this->model->getPostByText($_GET['text']));
     }
 
 }

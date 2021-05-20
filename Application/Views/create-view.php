@@ -10,15 +10,30 @@
                         <h4 class="d-flex justify-content-between align-items-center mb-3">
                             <span class="text-muted">Выбор категорий</span>
                         </h4>
-                        <?php foreach ($data as $datum) : ?>
-                            <div class="form-check">
-                                <input name="category[]" class="form-check-input" type="checkbox"
-                                       value="<?= $datum['id'] ?>" id="flexCheckDefault">
-                                <label class="form-check-label" for="flexCheckDefault">
-                                    <?= $datum['title'] ?>
-                                </label>
-                            </div>
-                        <?php endforeach; ?>
+                        <ul>
+                            <?php foreach ($data as $datum) : ?>
+                                <div class="form-check">
+                                    <li><input name="category[]" class="form-check-input" type="checkbox"
+                                               value="<?= $datum['id'] ?>" id="flexCheckDefault">
+                                        <label class="form-check-label" for="flexCheckDefault">
+                                            <?= $datum['title'] ?>
+                                        </label></li>
+                                    <?php if ($datum['children']): ?>
+                                        <?php foreach ($datum['children'] as $item): ?>
+                                            <ul>
+                                                <li><input name="category[]" class="form-check-input" type="checkbox"
+                                                           value="<?= $item['id'] ?>" id="flexCheckDefault">
+                                                    <label class="form-check-label"
+                                                           for="flexCheckDefault"><?= $item['title'] ?></label></li>
+                                            </ul>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </ul>
+
+                        <?php var_dump($otherData); ?>
+
                     </div>
 
                     <div class="col-md-7 col-lg-8">

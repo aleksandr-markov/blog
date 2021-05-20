@@ -69,5 +69,17 @@ class UserController extends Controller
 //        header();
     }
 
+    public function settings()
+    {
+        $this->view->generate('settings-view.php', 'templateView.php');
+    }
+
+    public function changeUserPhoto()
+    {
+//        var_dump($_REQUEST);
+        $this->model->changeUserPhoto($_SESSION['user']['id']);
+        header('Location: /user/profile');
+    }
+
 
 }

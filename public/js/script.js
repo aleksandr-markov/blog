@@ -1,5 +1,6 @@
 $(function () {
 
+
     /*
     Create post.
      */
@@ -38,7 +39,7 @@ $(function () {
     Show comments every 30 sec.
      */
 
-    fetchComment(articleId);
+    // fetchComment(articleId);
     // setInterval(function () {
     // }, 3000)
 
@@ -48,19 +49,41 @@ $(function () {
     /*
     Search
      */
-    // $('#searchBox').on('change', function (event){
-    //     event.preventDefault();
-    //     let data = $('#searchInput').val();
-    //     // $.get('search/byPost' )
-    //     $.ajax({
-    //         url: '/search/inPost',
-    //         method: 'GET',
-    //         data: {text: data},
-    //         success: function (response){
-    //             console.log(response);
-    //         }
-    //     })
-    // });
+    $('#searchFilter').on('submit', function (event) {
+        event.preventDefault();
+        let text = $('#searchByText').val();
+
+        let category = $('#searchByCategory').val();
+
+        console.log(text)
+        $.ajax({
+            url: '/search/info',
+            method: 'GET',
+            // dataType: 'json',
+            data: {text: text, category: category},
+            success: function (response) {
+                let json = JSON.parse(response)
+                $.each(json, function (index) {
+                    $('table tr').each(function (row) {
+                        $(this).find('td').each(function (cell) {
+                            // $('#title').html(json[index]['title'])
+                            // console.log($(this).html())
+                            console.log('Строка ' + row + ', ячейка ' + cell + ', значение: ' + $(this).html());
+                            // $(this).html(json[index]['title'])
+                        });
+                    });
+                    // console.log(json)
+
+                    //
+                    //     console.log(json[index]['title'])
+                    //     $('td').html(json[index]['title'])
+                    //     // $('td').each(function (d){
+                    //     //     console.log(d)
+                    //     // })
+                    })
+                }
+            })
+    });
 
 })
 
@@ -90,8 +113,7 @@ function replyComment(parent_id) {
                 // $('')
                 fetchComment(articleId);
                 $('.rowReply').val('');
-                $
-
+                $('.rowReply').hide();
             }
         })
     })
@@ -126,26 +148,6 @@ function fetchComment(articleId) {
         }
     })
 }
-
-// function sendReply(article_id, comment, parent_id) {
-//     $("#addReply").on('click', function () {
-//         comment = $("#replyComment").val();
-//
-//         $.ajax({
-//             url: "/posts/comments",
-//             method: "POST",
-//             dataType: 'text',
-//             data: {
-//                 comment_content: comment,
-//                 articleId: article_id,
-//                 parentId: parent_id
-//             },
-//             success: function (response) {
-//                 console.log(response)
-//             }
-//         })
-//     })
-// }
 
 function sendComment(articleId, comment) {
     comment = $("#commentField").val();

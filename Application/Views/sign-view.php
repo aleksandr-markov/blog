@@ -8,21 +8,19 @@
 
     <!--            <div class="row g-3">-->
     <div class="col-12">
-<!--        <form class="signup">-->
-            <label for="login" class="form-label">Введите логин</label>
-            <input name="login" type="text" class="form-control" id="login" required>
-            <div class="col-12">
-                <label for="email" class="form-label">Введите Ваш email</label>
-                <input name="email" type="email" class="form-control" id="email" required>
+        <!--        <form class="signup">-->
+        <label for="login" class="form-label">Введите логин</label>
+        <input name="login" type="text" class="form-control" id="login" required>
 
-                <div class="col-sm-12">
-                    <label for="password" class="form-label">Введите пароль</label>
-                    <input name="password" type="password" class="form-control" id="password" required>
-                </div>
-            </div>
-<!--        </form>-->
+        <label for="email" class="form-label">Введите Ваш email</label>
+        <input name="email" type="email" class="form-control" id="email" required>
+
+
+        <label for="password" class="form-label">Введите пароль</label>
+        <input name="password" type="password" class="form-control" id="password" required>
+
     </div>
     <hr class="my-4">
     <button class="w-100 btn btn-primary btn-lg" id="signupSubmit" type="submit">Зарегестрироваться</button>
-    <!--    </form>-->
+
 </div>

@@ -138,7 +138,7 @@ class PostModel extends Model
             echo '<li style="list-style-type: none;"> <span class="user">' . $comment['login'] .
                 ' </span><span class="time">' . $comment['time'] . '</span> ' . '<span class="userComment">' .
                 htmlentities($comment['comment_text']) . '</span>';
-            echo '<div class="reply" id="' . $comment['id'] . '"><a href="javascript:void(0)" onclick="replyComment(' . $comment['id'] . ')">ответить</a></div>';
+            echo '<div class="reply" id="' . $comment['id'] . '"><button class="btn" onclick="replyComment(' . $comment['id'] . ')">ответить</button></div>';
 
             if (!empty($comment['children'])) {
                 $this->commentView($comment['children'], $level + 1); // recurse into the next level
@@ -161,8 +161,9 @@ class PostModel extends Model
     public function getAllCategory()
     {
         $this->database->executeQuery('SELECT * FROM category');
+        $array = $this->database->resultSet();
 
-        return $this->database->resultSet();
+        return $this->buildTree($array);
     }
 
     public function getPostByCategory(int $id)
@@ -215,10 +216,12 @@ class PostModel extends Model
         return $this->database->resultSet();
     }
 
-    public function getByPostContent(string $text)
+    public function getPostByText(string $text)
     {
-        $sql = "select * from articles where text like :text or title like :text";
-        $this->database->executeQuery($sql, [':text' => '%'.$text.'%']);
-        return $this->database->resultSet();
+        $sql = "select title, date_create from articles where text like :text or title like :text";
+        $this->database->executeQuery($sql, [':text' => '%' . $text . '%']);
+
+        return ($this->database->resultSet());
     }
+
 }

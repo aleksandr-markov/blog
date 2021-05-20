@@ -11,11 +11,16 @@
 </div>
 <p><?= $data['post']['text'] ?></p>
 
-<?php if (!$data['isLiked']): ?>
-    <i class="fa fa-thumbs-o-up fa-2x like-btn" data-id="<?= $data['post']['id'] ?>"><span
-                class="countLikes"><?= $data['getLikes'] ?></span></i>
+<?php if (isset($_SESSION['user'])): ?>
+    <?php if (!$data['isLiked']): ?>
+        <i class="fa fa-thumbs-o-up fa-2x like-btn" data-id="<?= $data['post']['id'] ?>"><span
+                    class="countLikes"><?= $data['getLikes'] ?></span></i>
+    <?php else: ?>
+        <i class="fa fa-thumbs-up fa-2x like-btn" data-id="<?= $data['post']['id'] ?>"><span
+                    class="countLikes"><?= $data['getLikes'] ?></span></i>
+    <?php endif; ?>
 <?php else: ?>
-    <i class="fa fa-thumbs-up fa-2x like-btn" data-id="<?= $data['post']['id'] ?>"><span
+    <i class="fa fa-thumbs-o-up fa-2x" aria-disabled="true"><span
                 class="countLikes"><?= $data['getLikes'] ?></span></i>
 <?php endif; ?>
 

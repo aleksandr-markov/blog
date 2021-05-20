@@ -27,14 +27,14 @@
 <!--<div class="container">-->
 <header class="p-3 mb-3 border-bottom">
     <div class="container">
-        <?php include '../Application/Views/navbar-view.php'; ?>
+        <?php include '../Application/Views/layouts/navbar-view.php'; ?>
     </div>
 </header>
     <main class="container">
         <?php include '../Application/Views/' . $contentView; ?>
     </main>
 
-        <?php include '../Application/Views/footer-view.php' ?>
+        <?php include '../Application/Views/layouts/footer-view.php' ?>
 
 <!--</div>-->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"
