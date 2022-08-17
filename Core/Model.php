@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Core;
 
 use PDO;
@@ -13,6 +12,4 @@ class Model
     {
         $this->database = new Database();
     }
-
-
 }
