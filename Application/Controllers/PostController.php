@@ -1,15 +1,12 @@
 <?php
 
-
 namespace Application\Controllers;
-
 
 use Application\Models\PostModel;
 use Core\Controller;
 
 class PostController extends Controller
 {
-
     public $allCategory;
 
     public function __construct()
@@ -20,11 +17,11 @@ class PostController extends Controller
 
     public function index()
     {
-//        var_dump($this->model->getByPostContent('lorem'));
         $data = [
             'category' => $this->model->getAllCategory(),
-            'topPost' => $this->model->getTopPosts()
+            'topPost'  => $this->model->getTopPosts()
         ];
+        
         $this->view->generate('mainView.php', 'templateView.php', $this->model->index(), $data);
     }
 
@@ -39,15 +36,13 @@ class PostController extends Controller
 
     public function create()
     {
-//        var_dump($_POST);
-//        $data = ['count' => $this->model->countUserPosts($_SESSION['user']['id']), 'category' => $this->model->getPostByUserId($_SESSION['user']['id'])];
         $this->view->generate("create-view.php", 'templateView.php', $this->model->getAllCategory());
     }
 
     public function posts(int $id)
     {
         $data = [
-            'post' => $this->model->getPostById($id),
+            'post'     => $this->model->getPostById($id),
             'getLikes' => $this->model->getLikes($id)
         ];
         isset($_SESSION['user']) ? $data['isLiked'] = $this->model->isUserLiked($id, $_SESSION['user']['id']) : null;
@@ -77,7 +72,6 @@ class PostController extends Controller
 
     public function addComment()
     {
-//        var_dump($_POST);
         echo($this->model->addComment($_SESSION['user']['id'], $_POST['articleId'], trim($_POST['comment_content']),
             isset($_POST['parentId']) ? $_POST['parentId'] : 0));
     }
@@ -103,11 +97,9 @@ class PostController extends Controller
         switch ($_POST['action']) {
             case('like'):
                 return $this->model->like($_SESSION['user']['id'], $_POST['postId']);
-//                break;
             case
             ('unlike'):
                 return $this->model->unlike($_SESSION['user']['id'], $_POST['postId']);
-//                break;
             default:
                 return false;
         }
@@ -115,7 +107,6 @@ class PostController extends Controller
 
     public function searchMain()
     {
-        var_dump($_GET);
         $this->view->generate('searchPage-view.php', 'templateView.php', $this->model->getPostByText($_GET['text']));
     }
 
