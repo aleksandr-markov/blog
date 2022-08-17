@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Application\Models;
-
 
 use Core\FileRequest;
 use Core\Model;
@@ -29,22 +27,18 @@ class PostModel extends Model
 
     public function store($title, $text, $id, $category = null)
     {
-        var_dump($_POST);
         $request = new FileRequest();
         $file = $request->get('userFile')->upload();
-//        $this->database->executeQuery()
-        var_dump($request->get('userFile')->getName());
-//        die();
+
         if (!empty($title) and !empty($text)) {
             $params = [
                 ':user_id' => $id,
-                ':title' => $title,
+                ':title'   => $title,
                 ':article' => $text,
-                ':path' => '/storage/' . $request->get('userFile')->getName()
+                ':path'    => '/storage/' . $request->get('userFile')->getName()
             ];
             $this->database->executeQuery('INSERT INTO articles (`user_id`, `title`, `text`, `date_create`, `path`) VALUES (:user_id, :title, :article, now(), :path)',
                 $params);
-            var_dump($this->database->dumpErrorInfo());
 
             $article_id = $this->database->lastInsertId();
         }
@@ -91,10 +85,10 @@ class PostModel extends Model
     public function addComment($userId, $articleId, $text, $parentId = null)
     {
         $params = [
-            ':user_id' => $userId,
+            ':user_id'    => $userId,
             ':article_id' => $articleId,
-            ':text' => $text,
-            ':parent_id' => $parentId
+            ':text'       => $text,
+            ':parent_id'  => $parentId
         ];
         $this->database->executeQuery('INSERT INTO comments(`user_id`, `article_id`, `comment_text`, `parent_id`, `time`) VALUES (:user_id, :article_id, :text, :parent_id, NOW())',
             $params);
@@ -107,11 +101,9 @@ class PostModel extends Model
 
 
     public function getPostComment(int $id)
-    {        #echo '<pre>';
+    {      
         $this->database->executeQuery('SELECT u.login, comment_text, article_id, time, parent_id, c.id FROM comments c join users u on u.id = c.user_id where article_id = :id ORDER BY time DESC',
             [':id' => $id]);
-//        $this->database->query('select * from comments');
-//        $this->database->execute();
         $postComment = $this->database->resultSet();
 
         return $this->buildTree($postComment);
@@ -133,7 +125,6 @@ class PostModel extends Model
     public function commentView($arr, $level = 0)
     {
         echo '<ul>';
-//        echo '<ul>', PHP_EOL;
         foreach ($arr as $comment) {
             echo '<li style="list-style-type: none;"> <span class="user">' . $comment['login'] .
                 ' </span><span class="time">' . $comment['time'] . '</span> ' . '<span class="userComment">' .
@@ -146,8 +137,6 @@ class PostModel extends Model
             echo '</li>';
         }
         echo '</ul>';
-
-//        echo $html;
     }
 
     public function getCategoryPostById($id)
@@ -223,5 +212,4 @@ class PostModel extends Model
 
         return ($this->database->resultSet());
     }
-
 }
