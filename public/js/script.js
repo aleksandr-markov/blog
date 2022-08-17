@@ -35,14 +35,6 @@ $(function () {
      */
     fetchComment(articleId);
 
-    /*
-    Show comments every 30 sec.
-     */
-
-    // fetchComment(articleId);
-    // setInterval(function () {
-    // }, 3000)
-
 
     likePost();
 
