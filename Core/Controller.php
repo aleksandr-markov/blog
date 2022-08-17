@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Core;
-
 
 class Controller
 {
@@ -13,5 +11,4 @@ class Controller
     {
         $this->view = new View();
     }
-
 }
