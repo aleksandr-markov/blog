@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Core;
 
 use PDO;
@@ -60,14 +59,12 @@ class Database
     }
 
     //Execute the prepared statement
-
     public function resultSet()
     {
         return $this->statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
     //Return an array
-
     public function execute()
     {
         return $this->statement->execute();
