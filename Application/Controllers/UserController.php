@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Application\Controllers;
 
 use Application\Models\UserModel;
@@ -23,9 +22,9 @@ class UserController extends Controller
     {
         $userId = $_SESSION['user']['id'];
         $data = [
-            'user' => $this->model->getUser($userId),
+            'user'            => $this->model->getUser($userId),
             'commentActivity' => $this->model->getUserLastCommentActivity($userId),
-            'likeActivity' => $this->model->getUserLastLikeActivity($userId)
+            'likeActivity'    => $this->model->getUserLastLikeActivity($userId)
         ];
         $this->view->generate('userPage-view.php', 'templateView.php', $data);
     }
@@ -64,9 +63,7 @@ class UserController extends Controller
 
     public function userActivation(string $hash)
     {
-        var_dump($hash);
-        var_dump($this->model->activation($hash));
-//        header();
+        $this->model->activation($hash);
     }
 
     public function settings()
@@ -76,10 +73,7 @@ class UserController extends Controller
 
     public function changeUserPhoto()
     {
-//        var_dump($_REQUEST);
         $this->model->changeUserPhoto($_SESSION['user']['id']);
         header('Location: /user/profile');
     }
-
-
 }
