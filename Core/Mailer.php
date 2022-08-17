@@ -17,7 +17,6 @@ class Mailer extends PHPMailer
     {
 
         $mail_subject = "Активация аккаунта";
-//        $html_body = "";
         $mail_body = " Привет, $name, вот твоя ссылка для активации аккаунта " . $link;
         $email_sent = self::sendEmail($email, $name, $mail_subject, $mail_body);
 
@@ -30,8 +29,6 @@ class Mailer extends PHPMailer
         $mail = new PHPMailer(true);
         $mail->CharSet = "UTF-8";
         try {
-            //Server settings
-//            $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
             $mail->isSMTP();                                            //Send using SMTP
             $mail->Host = MAIL_HOST;                     //Set the SMTP server to send through
             $mail->SMTPAuth = true;                                   //Enable SMTP authentication
@@ -44,10 +41,6 @@ class Mailer extends PHPMailer
             $mail->setFrom(MAIL_USER,MAIL_NAME);
             $mail->addAddress($to_email, $to_name);     //Add a recipient
 
-            //Attachments
-//            $mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-//            $mail->addAttachment('/tmp/storage.jpg', 'new.jpg');    //Optional name
-
             //Content
             $mail->isHTML(true);                                  //Set email format to HTML
             $mail->Subject = $subject;
@@ -59,7 +52,5 @@ class Mailer extends PHPMailer
         } catch (Exception $e) {
             return "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
         }
-
-
     }
 }
