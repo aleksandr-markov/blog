@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Core;
-
 
 class File
 {
@@ -55,6 +53,4 @@ class File
         $fileUploader = new FileUploader();
         return $fileUploader->upload($this);
     }
-
-
 }
