@@ -1,5 +1,3 @@
-<!--<span class="badge badge-secondary">asdsad</span>-->
-
 <input type="hidden" class="articleId" name="articleId" id="<?= $data['post']['id'] ?>">
 
 <h1 style="text-align: center"><?= $data['post']['title'] ?></h1>
@@ -52,9 +50,3 @@
         </div>
     </div>
 </div>
-
-
-<!--                    <div class="user"><b>jjj</b> <span class="time">jjj</span></div>-->
-<!--                    <div class="userComment">hhh</div>-->
-<!--                    <div class="reply" id=""><a href="javascript:void(0)" onclick="forReply(1)">ответить</a></div>-->
-
