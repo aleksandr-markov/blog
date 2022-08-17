@@ -13,6 +13,4 @@ class View
         $userInfo = $_SESSION;
         include '../Application/Views/' . $templateView;
     }
-
-
 }
