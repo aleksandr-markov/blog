@@ -109,6 +109,7 @@ class UserModel extends Model
     public function getUser(int $userId)
     {
         $this->database->executeQuery('select * from users where id = :user_id', [':user_id' => $userId]);
+       
         return $this->database->singleSet();
     }
 
@@ -120,6 +121,7 @@ class UserModel extends Model
             . "JOIN articles a ON a.id = c.article_id\n"
             . "WHERE u.id = :userId";
         $this->database->executeQuery($sql, [':userId' => $userId]);
+        
         return $this->database->resultSet();
     }
 
@@ -130,6 +132,7 @@ class UserModel extends Model
             . "JOIN articles a ON a.id = l.post_id\n"
             . "WHERE l.user_id = :userId";
         $this->database->executeQuery($sql, [':userId' => $userId]);
+        
         return $this->database->resultSet();
     }
 
@@ -137,9 +140,9 @@ class UserModel extends Model
     {
         $request = new FileRequest();
         $file = $request->get('userFile')->upload();
-        var_dump($request, $file);
+
         $params = [
-            ':id' => $id,
+            ':id'   => $id,
             ':path' => '/storage/' . $request->get('userFile')->getName()
         ];
         $this->database->executeQuery('UPDATE `users` SET `avatar`= :path WHERE id = :id', $params);
