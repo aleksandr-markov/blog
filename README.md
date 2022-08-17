@@ -1,2 +1,2 @@
 # Skadi Blog
-Study project.
+A training project in pure PHP.
