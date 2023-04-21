@@ -61,31 +61,32 @@ class UserModel extends Model
 
     public function login($email, $password)
     {
-        if (!empty($email) && !empty($password)) {
-            if ($this->isNotBusy($email) != 0) {
-                $this->database->executeQuery('SELECT * FROM `users` WHERE email=:email', [':email' => $email]);
-                $userData = $this->database->singleSet();
-                if (password_verify($password, $userData['password'])) {
-                    $_SESSION['user'] = [
-                        'id' => $userData['id'],
-                        'admin' => $userData['admin'],
-                        'active' => $userData['active'],
-                        'avatar' => $userData['avatar']
-                    ];
-                    if ($userData['admin'] == 1) {
-                        return 'Welcome';
-                    } else {
-                        return "/posts/user/{$_SESSION['user']['id']}";
-                    }
-                } else {
-                    return 'You entered an incorrect password';
-                }
-            } else {
-                return 'There is no such user';
-            }
-        } else {
+        if (empty($email) || empty($password)) {
             return 'All fields must be filled';
         }
+        
+        if (!$this->isNotBusy($email)) {
+            return 'There is no such user';
+        }
+        
+        $this->database->executeQuery('SELECT * FROM `users` WHERE email=:email', [':email' => $email]);
+        $userData = $this->database->singleSet();
+        
+        if (!password_verify($password, $userData['password'])) {
+            return 'You entered an incorrect password';
+        }
+        
+        $_SESSION['user'] = [
+            'id'     => $userData['id'],
+            'admin'  => $userData['admin'],
+            'active' => $userData['active'],
+            'avatar' => $userData['avatar']
+        ];
+        if ($userData['admin'] == 1) {
+            return 'Welcome';
+        }
+        
+        return "/posts/user/{$_SESSION['user']['id']}";   
     }
 
     public function activation($hash)
